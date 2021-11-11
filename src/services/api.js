@@ -1,5 +1,8 @@
 import axios from "axios";
 import TokenService from "./token.service";
+import * as Castle from '@castleio/castle-js';
+
+Castle.configure("123");
 
 const instance = axios.create({
   baseURL: "http://localhost:8080/api",
@@ -9,7 +12,9 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    const requestToken = await Castle.createRequestToken();
+    console.log("requestToken",  requestToken)
     const token = TokenService.getLocalAccessToken();
     if (token) {
       // config.headers["Authorization"] = 'Bearer ' + token;  // for Spring Boot back-end
